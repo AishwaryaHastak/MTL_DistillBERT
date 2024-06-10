@@ -1,4 +1,6 @@
 ipykernel
 transformers
 pandas
+torch
+accelerate==0.31.0
 -e .
