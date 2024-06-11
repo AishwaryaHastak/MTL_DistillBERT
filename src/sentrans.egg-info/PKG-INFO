@@ -8,3 +8,12 @@ Author-email: h4hastak@gmail.com
 Project-URL: Bug Tracker, https://github.com/AishwaryaHastak/SENTENCETRANSFORMER/issues
 
 # SentenceTransformer
+
+
+Run the command
+
+pip install -r requirements.txt
+
+Run the main.py file
+
+python main.py
