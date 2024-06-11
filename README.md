@@ -25,3 +25,11 @@ Alternatively, if you prefer to run the application using the Flask web framewor
 ```bash
 python app.py
 ```
+
+The web application would look something like this:
+
+![image](https://github.com/AishwaryaHastak/SentenceTransformer/assets/31357026/c409d091-6de7-42ce-876f-61e80711591b)
+
+You can train the model and use it to classify topics and sentiments for random sentences.
+
+![image](https://github.com/AishwaryaHastak/SentenceTransformer/assets/31357026/6bc68c82-d6dc-4117-82e3-57b87425aea8)
