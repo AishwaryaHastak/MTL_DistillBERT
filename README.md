@@ -1,10 +1,9 @@
 # SentenceTransformer
 
 
-Run the command
+## Installation
 
+First, install the required dependencies by running the following command:
+
+```bash
 pip install -r requirements.txt
-
-Run the main.py file
-
-python main.py
