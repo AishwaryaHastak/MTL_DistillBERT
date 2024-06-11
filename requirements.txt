@@ -1,6 +1,13 @@
 ipykernel
-transformers
-pandas
-torch
+transformers>=4.41.2
+pandas>=2.2.2
+torch>=2.3.1
+numpy>=1.26.4
 accelerate==0.31.0
+evaluate
+requests==2.32.3
+chardet==4.0.0
+flask
+flask_socketio
+gunicorn
 -e .
