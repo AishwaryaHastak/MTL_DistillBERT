@@ -20,3 +20,8 @@ python main.py
 
 Running this command will start the application and execute the main script, allowing you to interact with the functionality provided by the program.
 
+
+Alternatively, if you prefer to run the application using the Flask web framework, you can use the following command:
+```bash
+python app.py
+```
