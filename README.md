@@ -1,4 +1,4 @@
-# SentenceTransformer
+# A Multi-Task Learning News Analysis Model using Sentence Transformer
 
 
 ## Installation
