@@ -1,7 +1,7 @@
 # A Multi-Task Learning News Analysis Model using Sentence Transformer
 
 
-## Installation
+### Installation
 
 First, install the required dependencies by running the following command:
 

@@ -11,7 +11,8 @@ class Tokenize:
 
     def prepare_dataset(self, data_file_path): 
 
-        wine_df = pd.read_csv(data_file_path).head(500)
+        wine_df = pd.read_csv(data_file_path)
+        wine_df = wine_df.sample(n=5000, random_state=42).reset_index(drop=True)
         wine_df['variety'], unique_classes = pd.factorize(wine_df['variety']) 
         self.num_classes = len(wine_df['variety'].unique()) 
         
@@ -20,7 +21,7 @@ class Tokenize:
         
         train_df = wine_df.sample(frac=0.8, random_state=42)
         eval_df = wine_df.drop(train_df.index)
-
+        
         # Ensure the columns are correctly formatted
         self.train_df = train_df[['variety', 'rating', 'notes']]
         self.eval_df = eval_df[['variety', 'rating', 'notes']]
@@ -29,7 +30,7 @@ class Tokenize:
         # tokenize classification dataset
         self.tokenized_train_data = self.tokenizer(self.train_df['notes'].tolist(), padding=True,\
                                                truncation=True,max_length=TOKEN_MAX_LENGTH, return_tensors='pt')
-
+        
         # tokenize classification dataset
         self.tokenized_eval_data = self.tokenizer(self.eval_df['notes'].tolist(), padding=True,\
                                               truncation=True,max_length=TOKEN_MAX_LENGTH, return_tensors='pt')

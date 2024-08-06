@@ -2,8 +2,8 @@ from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, emit
 from sentrans.tokenize import Tokenize
 from sentrans.embeddings import Embeddings
-from sentrans.dataset import NewsDataset
-from sentrans.constants import MODEL_NAME, TOKEN_MAX_LENGTH, CLASSIFICATION_FILE_PATH, SENTIMENT_FILE_PATH
+from sentrans.dataset import WineDataset
+from sentrans.constants import MODEL_NAME, TOKEN_MAX_LENGTH, DATA_FILE_PATH
 from sentrans.model import MultiTaskBERT
 from sentrans.collator import SentenceDataCollator
 from sentrans.metric import compute_metrics
@@ -16,8 +16,7 @@ app = Flask(__name__)
 socketio = SocketIO(app)
 
 tokenize = Tokenize(MODEL_NAME)
-st_model = None
-trainer = None
+mtl_model = None 
 
 @app.route('/')
 def index():
@@ -25,27 +24,23 @@ def index():
 
 @socketio.on('start_training')
 def start_training():
-    global st_model, trainer
+    global st_model,mtl_model
     response = {
         "message": "Training started...",
         "status": "running"
     }
     emit('training_status', response)
 
-    tokenize.prepare_dataset(CLASSIFICATION_FILE_PATH, SENTIMENT_FILE_PATH)
+    tokenize.prepare_dataset(DATA_FILE_PATH)
     tokenize.tokenize_data(tokenize.tokenizer, TOKEN_MAX_LENGTH)
-    st_model = Embeddings(tokenize.tokenizer, MODEL_NAME)
-    st_model.create_embeddings(tokenize.tokenized_train_data)
 
-    # Print embeddings for a few sentences
-    for i in range(2):  # Adjust the range as needed
-        print('\nSentence: \n', tokenize.train_df.iloc[i]['sentence'], '\nEmbedding: \n', st_model.embeddings[i])
-        print('\nEmbedding Shape: \n', st_model.embeddings[i].shape)
-
-    train_dataset = NewsDataset(tokenize.tokenized_train_data, tokenize.train_df['label'].tolist(), tokenize.train_df['task'].tolist())
-    eval_dataset = NewsDataset(tokenize.tokenized_eval_data, tokenize.eval_df['label'].tolist(), tokenize.eval_df['task'].tolist())
+    train_dataset = WineDataset(tokenize.tokenized_train_data, tokenize.train_df['variety'].tolist(),\
+                                tokenize.train_df['rating'].tolist())
+    eval_dataset = WineDataset(tokenize.tokenized_eval_data, tokenize.eval_df['variety'].tolist(), \
+                               tokenize.eval_df['rating'].tolist())
     data_collator = SentenceDataCollator()
-    mtl_model = MultiTaskBERT(num_classes_topic=tokenize.num_classes, num_classes_sentiment=tokenize.num_sentiment, model=st_model.model)
+    mtl_model = MultiTaskBERT(model_name=MODEL_NAME,
+                              num_classes=tokenize.num_classes) 
     training_args = TrainingArgs()
 
     class CustomTrainer(SentenceTrainer):
@@ -87,22 +82,25 @@ def start_training():
     emit('training_progress', {'progress': 1.0})
 
     predictions, labels, metrics = trainer.predict(eval_dataset)
-    emit('final_accuracy', metrics['test_accuracy'])
+    # emit('final_accuracy', metrics['test_variety_accuracy'])
+    emit(f"Variety Accuracy:{metrics['test_variety_accuracy']:.2f}")
+    emit(f"Rating Accuracy:{metrics['test_rating_accuracy']:.2f}")
+     
 
 @app.route('/predict', methods=['POST'])
 def predict():
     sentence = request.json['sentence']
-    topic, sentiment = predict_sentence(trainer, tokenize.tokenizer, sentence, TOKEN_MAX_LENGTH)
+    variety, rating = predict_sentence(mtl_model, tokenize.tokenizer, sentence, TOKEN_MAX_LENGTH)
     response = {
         "sentence": sentence,
-        "predicted_topic": tokenize.class_label_decode[topic],
-        "predicted_sentiment": tokenize.sent_label_decode[sentiment]
+        "predicted_variety": tokenize.class_label_decode[variety],
+        "predicted_rating": rating
     }
     return jsonify(response)
 
 @app.route('/random_sentence', methods=['GET'])
 def random_sentence():
-    with open('sample_sentences.txt', 'r') as file:
+    with open('sample_wine_descriptions.txt', 'r') as file:
         sentences = file.readlines()
     random_sentence = random.choice(sentences)
     return jsonify({"sentence": random_sentence})

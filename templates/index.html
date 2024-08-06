@@ -10,7 +10,7 @@
         <style>
             body {
                 font-family: Arial, sans-serif;
-                background-color: #000000; /* Black */
+                background-color: #5c6554; /* Black */
                 color: #ffffff; /* White */
                 margin: 0;
                 padding: 0;
@@ -19,27 +19,22 @@
                 max-width: 800px;
                 margin: 0 auto;
                 padding: 20px;
-                background-color: #1f1f1f; /* Dark Grey */
+                background-color: #070a06; /* Dark Grey */
                 border-radius: 10px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+                box-shadow: 0 0 10px rgba(70, 79, 52, 0.587);
                 margin-top: 50px;
             }
             h1, h2 {
-                color: #ffc107; /* Yellow */
+                color: #c19101; /* Yellow */
             }
             button.btn-primary, button.btn-success {
-            background-color: #ffffff; /* White */
-            border-color: #ffffff; /* White */
-            color: #000000; /* Black */
-        }
-        button.btn-primary:not(:disabled):not(.disabled):active, button.btn-success:not(:disabled):not(.disabled):active {
-            background-color: #ffffff; /* White */
-            border-color: #ffffff; /* White */
-            color: #000000; /* Black */
+            background-color: #8ea063e0; /* White */
+            border-color: #5c702fe0; /* White */
+            color: #091008; /* Black */
         }
         button.btn-primary:hover, button.btn-success:hover {
-            background-color: #000000; /* Black */
-            border-color: #000000; /* Black */
+            background-color: #4a5b24; /* Black */
+            border-color: #4a5b24; /* Black */
             color: #ffffff; /* White */
         }
             .progress {
@@ -48,8 +43,9 @@
                 margin-bottom: 20px;
             }
             #progressBar .progress-bar {
+                color: #4a5b24;
                 border-radius: 15px;
-                background-color: #ffffff; /* White */
+                background-color: #c9dbb7; /* White */
             }
             #predictionResult {
                 margin-top: 20px;
@@ -59,8 +55,8 @@
     
 <body>
     <div class="container">
-        <h1 class="mt-5">Mutli Task Transformer Training and Prediction</h1>
-        <h4 class="mt-5" style="color: white;">This is a fine-tuned DistilBERT model that performs Topic Classification and Sentiment Analysis</h4>
+        <h1 class="mt-5">Mutli Task Transformer Learning</h1>
+        <h4 class="mt-5" style="color: white;">Fine-tune DistilBERT model on Wine dataset to predict the wine cateogry (classification) and rating (regression) based on the wine description</h4>
 
         <button id="trainButton" class="btn btn-primary mt-3">Train Model</button>
         <div id="trainStatus" class="mt-3"></div>
@@ -69,12 +65,12 @@
         </div>
         <div id="finalAccuracy" class="mt-3"></div>
         <hr>
-        <h2>Predict Sentence Topic and Sentiment</h2>
+        <h2>Predict Wine Variety and Rating</h2>
         <div class="input-group mt-3">
-            <input type="text" id="sentenceInput" class="form-control" placeholder="Enter your sentence here">
+            <input type="text" id="sentenceInput" class="form-control" placeholder="Enter wine description here">
             <div class="input-group-append">
                 <button id="predictButton" class="btn btn-success">Predict</button>
-                <button id="randomSentenceButton" class="btn btn-primary">Random Sentence</button>
+                <button id="randomSentenceButton" class="btn btn-primary">Genearte Random Description</button>
             </div>
         </div>
         <div id="predictionResult" class="mt-3"></div>
@@ -119,9 +115,9 @@
                 data: JSON.stringify({ sentence: sentence }),
                 success: function(response) {
                     $('#predictionResult').html(
-                        `<p>Sentence: ${response.sentence}</p>
-                         <p>Predicted Topic: ${response.predicted_topic}</p>
-                         <p>Predicted Sentiment: ${response.predicted_sentiment}</p>`
+                        `<p>Description: ${response.sentence}</p>
+                         <p>Predicted Variety: ${response.predicted_variety}</p>
+                         <p>Predicted Rating: ${response.predicted_rating}</p>`
                     );
                 }
             });

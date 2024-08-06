@@ -17,5 +17,6 @@ class TrainingArgs():
             eval_strategy=TRAINING_ARGUMENTS['eval_strategy'],
             eval_steps=TRAINING_ARGUMENTS['eval_steps'],
             save_steps=TRAINING_ARGUMENTS['save_steps'],
-            save_total_limit=TRAINING_ARGUMENTS['save_total_limit']
+            save_total_limit=TRAINING_ARGUMENTS['save_total_limit'],
+            learning_rate=TRAINING_ARGUMENTS['learning_rate']
         )
