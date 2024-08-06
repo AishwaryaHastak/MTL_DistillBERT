@@ -1,40 +1,47 @@
 # trainer.py
 
 from transformers import Trainer
+from sentrans.constants import CLASSIFICATION_WT, REGRESSION_WT
 import torch 
 
 # Define a custom trainer
 class SentenceTrainer(Trainer):
-    def compute_loss(self, model, inputs):
+    def compute_loss(self, model, inputs):        
         input_ids = inputs['input_ids']
         attention_mask = inputs['attention_mask']
-        labels = inputs['label']
-        tasks = inputs['task']
-        
-        outputs = model(input_ids, attention_mask, tasks) 
-        return torch.nn.CrossEntropyLoss()(outputs, labels)
+        variety = inputs['variety']
+        rating = inputs['rating'] 
+        variety_preds, rating_preds = model(input_ids, attention_mask)
+        classification_loss = torch.nn.CrossEntropyLoss()(variety_preds, variety)
+        # print('rating_preds, rating', rating_preds, rating)
+        if rating_preds.dim() > 1:
+            rating_preds = rating_preds.squeeze(-1)  # Squeeze the last dimension if it's size 1
+
+        # Ensure rating is of type float and the same shape
+        rating = rating.float()
+
+        regression_loss = torch.nn.MSELoss()(rating_preds, rating)
+
+        # Get weighted average of both the losses
+        loss = CLASSIFICATION_WT * classification_loss + \
+                REGRESSION_WT * regression_loss
+
+        return loss
     
-    def prediction_step(self, model, inputs, prediction_loss_only, both_tasks=False, ignore_keys=None):
+    def prediction_step(self, model, inputs, prediction_loss_only,ignore_keys=None):
         input_ids = inputs['input_ids']
-        attention_mask = inputs['attention_mask']
-        if both_tasks == True:
-            tasks = ['class','sent']
-        else:
-            tasks = inputs['task'] 
+        attention_mask = inputs['attention_mask'] 
         
         # We do not need to calculate gradients for validation
         with torch.no_grad():
-            logits = []
-            for i, task in enumerate(tasks):
-                task_output = model(input_ids=input_ids[i].unsqueeze(0), attention_mask=attention_mask[i].unsqueeze(0), task=task)
-                logits.append(task_output)
+            logits = [] 
+            pred_topics, pred_sentiments = model(input_ids=input_ids, attention_mask=attention_mask)
 
-        logits = torch.cat(logits)
+        logits = (pred_topics, pred_sentiments)
 
         if prediction_loss_only:
             return (None, logits, None)
-
-        # labels = torch.argmax(inputs['label'], dim=1)
-        labels = inputs['label']
+ 
+        labels = (inputs['variety'], inputs['rating'])
         return (None, logits, labels)
 

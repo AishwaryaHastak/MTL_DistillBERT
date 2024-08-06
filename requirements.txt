@@ -1,13 +1,21 @@
+numpy==1.24.3
+scipy==1.9.1
+protobuf==4.21.12
+
+# Core dependencies
 ipykernel
 transformers>=4.41.2
 pandas>=2.2.2
 torch>=2.3.1
-numpy>=1.26.4
 accelerate==0.31.0
 evaluate
 requests==2.32.3
 chardet==4.0.0
+
+# Web and deployment
 flask
 flask_socketio
 gunicorn
+
+# Local package
 -e .

@@ -1,7 +1,7 @@
 # training_args.py
 
 from transformers import TrainingArguments
-from src.sentrans.constants import TRAINING_ARGUMENTS
+from sentrans.constants import TRAINING_ARGUMENTS
 
 class TrainingArgs():
     def __init__(self):
