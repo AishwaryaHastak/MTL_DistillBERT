@@ -8,7 +8,9 @@ src/sentrans/embeddings.py
 src/sentrans/metric.py
 src/sentrans/model.py
 src/sentrans/predict.py
+src/sentrans/scaler_manager.py
 src/sentrans/tokenize.py
+src/sentrans/train.py
 src/sentrans/trainer.py
 src/sentrans/training_args.py
 src/sentrans.egg-info/PKG-INFO

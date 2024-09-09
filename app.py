@@ -34,9 +34,9 @@ def start_training():
     tokenize.prepare_dataset(DATA_FILE_PATH)
     tokenize.tokenize_data(tokenize.tokenizer, TOKEN_MAX_LENGTH)
 
-    train_dataset = WineDataset(tokenize.tokenized_train_data, tokenize.train_df['variety'].tolist(),\
+    train_dataset = WineDataset(tokenize.tokenized_train_data, tokenize.train_df['age'].tolist(),\
                                 tokenize.train_df['rating'].tolist())
-    eval_dataset = WineDataset(tokenize.tokenized_eval_data, tokenize.eval_df['variety'].tolist(), \
+    eval_dataset = WineDataset(tokenize.tokenized_eval_data, tokenize.eval_df['age'].tolist(), \
                                tokenize.eval_df['rating'].tolist())
     data_collator = SentenceDataCollator()
     mtl_model = MultiTaskBERT(model_name=MODEL_NAME,
