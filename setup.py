@@ -18,7 +18,7 @@ setuptools.setup(
     version=__version__,
     author=AUTHOR_USER_NAME,
     author_email=AUTHOR_EMAIL,
-    description="This repository is to serve as an archive for my submission made for Fetch's take home assessment.",
+    description="Mutli-task learning using DistilBERT model on Wine Review Dataset",
     long_description=long_description,
     long_description_content="text/markdown",
     url=f"https://github.com/{AUTHOR_USER_NAME}/{REPO_NAME}",
